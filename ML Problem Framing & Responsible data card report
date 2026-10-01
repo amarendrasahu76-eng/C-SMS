@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Problem Framing & Responsible Data Card Suite</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+​<!-- Top Navigation Bar -->
+<header class="bg-indigo-700 text-white shadow-md">
+<div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+<div class="flex items-center space-x-3">
+<i data-lucide="cpu" class="w-8 h-8 text-indigo-200"></i>
+<div>
+<h1 class="text-xl font-bold tracking-tight">ML Problem Framing & Responsible Data Card</h1>
+<p class="text-xs text-indigo-200">Decide whether ML is justified & document data, harms, and fallbacks prior to training.</p>
+</div>
+</div>
+<div class="flex space-x-2">
+<button onclick="window.print()" class="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-3 py-2 rounded shadow transition">
+<i data-lucide="printer" class="w-4 h-4"></i>
+<span>Print / PDF</span>
+</button>
+<button onclick="resetForm()" class="flex items-center space-x-1 bg-indigo-800 hover:bg-indigo-900 text-indigo-100 text-sm px-3 py-2 rounded transition">
+<i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+<span>Reset</span>
+</button>
+</div>
+</div>
+</header>
+​<!-- Main Container -->
+<main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
+​<!-- Sidebar Navigation -->
+<aside class="lg:col-span-1 space-y-2">
+<div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 sticky top-4">
+<h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Implementation Steps</h3>
+<nav class="space-y-1">
+<button onclick="switchTab('framing')" id="nav-framing" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition text-indigo-700 bg-indigo-50">
+<i data-lucide="target" class="w-4 h-4"></i>
+<span>1. Problem Framing</span>
+</button>
+<button onclick="switchTab('datacard')" id="nav-datacard" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+<i data-lucide="database" class="w-4 h-4"></i>
+<span>2. Responsible Data Card</span>
+</button>
+<button onclick="switchTab('metrics')" id="nav-metrics" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+<i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+<span>3. Metrics & Error Costs</span>
+</button>
+<button onclick="switchTab('fallbacks')" id="nav-fallbacks" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+<i data-lucide="shield-alert" class="w-4 h-4"></i>
+<span>4. Fallbacks & Rollback</span>
+</button>
+</nav>
+​<div class="mt-6 pt-4 border-t border-slate-100">
+<h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Expected Proofs</h4>
+<ul class="text-xs text-slate-500 space-y-1 list-disc list-inside">
+<li>ML problem-framing memo</li>
+<li>Responsible data card</li>
+<li>Baseline reproducible notebook</li>
+<li>Comprehensive risk register</li>
+</ul>
+</div>
+</div>
+</aside>
+​<!-- Interactive Content Area -->
+<section class="lg:col-span-3 space-y-6">
+​<!-- TAB 1: Problem Framing -->
+<div id="tab-framing" class="space-y-6">
+<div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+<div class="flex items-center space-x-3 mb-4">
+<div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+<i data-lucide="target" class="w-6 h-6"></i>
+</div>
+<div>
+<h2 class="text-lg font-bold text-slate-900">Step 1: Define Decision, Prediction Target & Baseline</h2>
+<p class="text-xs text-slate-500">Determine whether machine learning is truly justified over a non-ML baseline.</p>
+</div>
+</div>
+​<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Business Decision</label>
+<input type="text" id="f-decision" placeholder="e.g., Approve or decline micro-loans automatically" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Prediction Target</label>
+<input type="text" id="f-target" placeholder="e.g., Probability of default within 90 days" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Unit of Observation</label>
+<input type="text" id="f-observation" placeholder="e.g., Individual loan application record" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Action Window</label>
+<input type="text" id="f-window" placeholder="e.g., Real-time decision within 500ms" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Non-ML Baseline</label>
+<input type="text" id="f-baseline" placeholder="e.g., Current credit score threshold &ge; 650" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Justification for ML over Baseline</label>
+<textarea id="f-justification" rows="3" placeholder="Explain why simple rules are insufficient and how pattern recognition adds genuine value..." class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+</div>
+</div>
+​<div class="flex justify-end">
+<button onclick="switchTab('datacard')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-md text-sm font-medium transition shadow-sm">
+<span>Next: Responsible Data Card</span>
+<i data-lucide="arrow-right" class="w-4 h-4"></i>
+</button>
+</div>
+</div>
+​<!-- TAB 2: Responsible Data Card -->
+<div id="tab-datacard" class="hidden space-y-6">
+<div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+<div class="flex items-center space-x-3 mb-4">
+<div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+<i data-lucide="database" class="w-6 h-6"></i>
+</div>
+<div>
+<h2 class="text-lg font-bold text-slate-900">Step 2: Responsible Data Card</h2>
+<p class="text-xs text-slate-500">Document data provenance, consent, sensitive attributes, missingness, and leakage.</p>
+</div>
+</div>
+​<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Data Provenance & Sources</label>
+<textarea id="dc-provenance" rows="2" placeholder="Where did the data come from? Include time range, collection methods, and extraction pipelines..." class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Consent & Privacy Compliance</label>
+<textarea id="dc-consent" rows="2" placeholder="How was user consent obtained? Note GDPR/CCPA status, anonymization, and PII handling..." class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Sensitive Attributes & Proxy Risks</label>
+<textarea id="dc-sensitive" rows="2" placeholder="List protected classes (race, gender, age) and potential proxies that could introduce algorithmic bias..." class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Missingness Strategy</label>
+<input type="text" id="dc-missing" placeholder="e.g., Imputation method, MCAR/MAR evaluation" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Target Leakage Audit</label>
+<input type="text" id="dc-leakage" placeholder="e.g., Checked for future features present at inference" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+</div>
+</div>
+</div>
+​<div class="flex justify-between">
+<button onclick="switchTab('framing')" class="flex items-center space-x-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-md text-sm font-medium transition shadow-sm">
+<i data-lucide="arrow-left" class="w-4 h-4"></i>
+<span>Back</span>
+</button>
+<button onclick="switchTab('metrics')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-md text-sm font-medium transition shadow-sm">
+<span>Next: Metrics & Costs</span>
+<i data-lucide="arrow-right" class="w-4 h-4"></i>
+</button>
+</div>
+</div>
+​<!-- TAB 3: Metrics & Error Costs -->
+<div id="tab-metrics" class="hidden space-y-6">
+<div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+<div class="flex items-center space-x-3 mb-4">
+<div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+<i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+</div>
+<div>
+<h2 class="text-lg font-bold text-slate-900">Step 3: Business & Model Metrics with Error Costs</h2>
+<p class="text-xs text-slate-500">Explicitly calculate the financial and operational impact of false positives and false negatives.</p>
+</div>
+</div>
+​<div class="space-y-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Primary Business Metric</label>
+<input type="text" id="m-business" placeholder="e.g., Net portfolio yield / ROI" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Primary Model Metric</label>
+<input type="text" id="m-model" placeholder="e.g., Precision-Recall AUC (PR-AUC)" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">False-Positive (FP) Cost Analysis</label>
+<textarea id="m-fp" rows="2" placeholder="What happens when we incorrectly predict positive? (e.g., Rejecting creditworthy customer, lost revenue)..." class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">False-Negative (FN) Cost Analysis</label>
+<textarea id="m-fn" rows="2" placeholder="What happens when we incorrectly predict negative? (e.g., Defaulting loan, compliance breach, safety hazard)..." class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+</div>
+</div>
+​<div class="flex justify-between">
+<button onclick="switchTab('datacard')" class="flex items-center space-x-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-md text-sm font-medium transition shadow-sm">
+<i data-lucide="arrow-left" class="w-4 h-4"></i>
+<span>Back</span>
+</button>
+<button onclick="switchTab('fallbacks')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-md text-sm font-medium transition shadow-sm">
+<span>Next: Fallbacks & Rollback</span>
+<i data-lucide="arrow-right" class="w-4 h-4"></i>
+</button>
+</div>
+</div>
+​<!-- TAB 4: Fallbacks & Rollback -->
+<div id="tab-fallbacks" class="hidden space-y-6">
+<div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+<div class="flex items-center space-x-3 mb-4">
+<div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+<i data-lucide="shield-alert" class="w-6 h-6"></i>
+</div>
+<div>
+<h2 class="text-lg font-bold text-slate-900">Step 4: Abstention, Human Review & Rollback Conditions</h2>
+<p class="text-xs text-slate-500">Design fail-safe mechanisms before any model touches live production data.</p>
+</div>
+</div>
+​<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Abstention & Confidence Thresholds</label>
+<textarea id="fb-abstention" rows="2" placeholder="At what model confidence score should the system refuse to predict and abstain?" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Human-Review Trigger Protocol</label>
+<textarea id="fb-human" rows="2" placeholder="Which edge cases or high-stakes predictions automatically route to human experts?" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Continuous Monitoring Setup</label>
+<input type="text" id="fb-monitoring" placeholder="e.g., Data drift alerts via Evidently / Prometheus" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 mb-1">Rollback Conditions</label>
+<input type="text" id="fb-rollback" placeholder="e.g., Revert to non-ML baseline if error rate spikes > 5%" class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+</div>
+</div>
+</div>
+</div>
+​<div class="flex justify-between">
+<button onclick="switchTab('metrics')" class="flex items-center space-x-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-md text-sm font-medium transition shadow-sm">
+<i data-lucide="arrow-left" class="w-4 h-4"></i>
+<span>Back</span>
+</button>
+<button onclick="generateReportSummary()" class="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-md text-sm font-medium transition shadow-sm">
+<i data-lucide="check-circle" class="w-4 h-4"></i>
+<span>Review & Export Summary</span>
+</button>
+</div>
+</div>
+​<!-- Summary / Report View Modal / Section -->
+<div id="summary-section" class="hidden bg-white p-6 rounded-lg shadow-sm border border-slate-200 space-y-6">
+<div class="flex justify-between items-center border-b border-slate-200 pb-4">
+<div>
+<h2 class="text-xl font-bold text-slate-900">Completed ML Framing & Data Card Report</h2>
+<p class="text-xs text-slate-500">Ready for stakeholder sign-off and risk register archival.</p>
+</div>
+<button onclick="hideSummary()" class="text-sm text-indigo-600 hover:underline">Edit Fields</button>
+</div>
+​<div id="report-output-content" class="space-y-6 text-sm text-slate-700">
+<!-- Populated dynamically via JS -->
+</div>
+​<div class="flex justify-end space-x-3 pt-4 border-t border-slate-200">
+<button onclick="window.print()" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow transition">
+<i data-lucide="printer" class="w-4 h-4"></i>
+<span>Print Report</span>
+</button>
+</div>
+</div>
+​</section>
+</main>
+​<!-- Footer -->
+<footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+<div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+ML Problem Framing & Responsible Data Card Interactive Suite • Designed for Ethical AI Governance
+</div>
+</footer>
+​<!-- Script Logic -->
+<script>
+lucide.createIcons();
+​function switchTab(tabId) {
+const tabs = ['framing', 'datacard', 'metrics', 'fallbacks'];
+tabs.forEach(t => {
+document.getElementById('tab-' + t).classList.add('hidden');
+document.getElementById('nav-' + t).className = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+});
+document.getElementById('summary-section').classList.add('hidden');
+​document.getElementById('tab-' + tabId).classList.remove('hidden');
+document.getElementById('nav-' + tabId).className = "w-full flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm font-medium transition text-indigo-700 bg-indigo-50";
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+​function resetForm() {
+if(confirm("Are you sure you want to reset all entered values?")) {
+document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+switchTab('framing');
+}
+}
+​function generateReportSummary() {
+const data = {
+decision: document.getElementById('f-decision').value || '[Not specified]',
+target: document.getElementById('f-target').value || '[Not specified]',
+observation: document.getElementById('f-observation').value || '[Not specified]',
+window: document.getElementById('f-window').value || '[Not specified]',
+baseline: document.getElementById('f-baseline').value || '[Not specified]',
+justification: document.getElementById('f-justification').value || '[Not specified]',
+provenance: document.getElementById('dc-provenance').value || '[Not specified]',
+consent: document.getElementById('dc-consent').value || '[Not specified]',
+sensitive: document.getElementById('dc-sensitive').value || '[Not specified]',
+missing: document.getElementById('dc-missing').value || '[Not specified]',
+leakage: document.getElementById('dc-leakage').value || '[Not specified]',
+business: document.getElementById('m-business').value || '[Not specified]',
+model: document.getElementById('m-model').value || '[Not specified]',
+fp: document.getElementById('m-fp').value || '[Not specified]',
+fn: document.getElementById('m-fn').value || '[Not specified]',
+abstention: document.getElementById('fb-abstention').value || '[Not specified]',
+human: document.getElementById('fb-human').value || '[Not specified]',
+monitoring: document.getElementById('fb-monitoring').value || '[Not specified]',
+rollback: document.getElementById('fb-rollback').value || '[Not specified]'
+};
+​const html = `
+<div class="space-y-4">
+<div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+<h3 class="font-bold text-slate-900 mb-2 flex items-center"><i data-lucide="target" class="w-4 h-4 mr-2 text-indigo-600"></i>1. Problem Framing Memo</h3>
+<p><strong>Decision:</strong> ${data.decision}</p>
+<p><strong>Prediction Target:</strong> ${data.target}</p>
+<p><strong>Unit of Observation:</strong> ${data.observation}</p>
+<p><strong>Action Window:</strong> ${data.window}</p>
+<p><strong>Non-ML Baseline:</strong> ${data.baseline}</p>
+<p><strong>ML Justification:</strong> ${data.justification}</p>
+</div>
+​<div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+<h3 class="font-bold text-slate-900 mb-2 flex items-center"><i data-lucide="database" class="w-4 h-4 mr-2 text-indigo-600"></i>2. Responsible Data Card</h3>
+<p><strong>Provenance:</strong> ${data.provenance}</p>
+<p><strong>Consent & Privacy:</strong> ${data.consent}</p>
+<p><strong>Sensitive Attributes:</strong> ${data.sensitive}</p>
+<p><strong>Missingness:</strong> ${data.missing} | <strong>Leakage Audit:</strong> ${data.leakage}</p>
+</div>
+​<div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+<h3 class="font-bold text-slate-900 mb-2 flex items-center"><i data-lucide="bar-chart-2" class="w-4 h-4 mr-2 text-indigo-600"></i>3. Metrics & Error Costs</h3>
+<p><strong>Business Metric:</strong> ${data.business} | <strong>Model Metric:</strong> ${data.model}</p>
+<p><strong>False-Positive Cost:</strong> ${data.fp}</p>
+<p><strong>False-Negative Cost:</strong> ${data.fn}</p>
+</div>
+​<div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+<h3 class="font-bold text-slate-900 mb-2 flex items-center"><i data-lucide="shield-alert" class="w-4 h-4 mr-2 text-indigo-600"></i>4. Fallback & Rollback Plan</h3>
+<p><strong>Abstention / Thresholds:</strong> ${data.abstention}</p>
+<p><strong>Human Review Protocol:</strong> ${data.human}</p>
+<p><strong>Monitoring:</strong> ${data.monitoring} | <strong>Rollback:</strong> ${data.rollback}</p>
+</div>
+</div>
+`;
+​['framing', 'datacard', 'metrics', 'fallbacks'].forEach(t => {
+document.getElementById('tab-' + t).classList.add('hidden');
+});
+document.getElementById('report-output-content').innerHTML = html;
+document.getElementById('summary-section').classList.remove('hidden');
+lucide.createIcons();
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+​function hideSummary() {
+document.getElementById('summary-section').classList.add('hidden');
+switchTab('framing');
+}
+</script>
+</body>
+</html>
